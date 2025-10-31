@@ -172,9 +172,10 @@ body {
   background-size: cover;
   background-position: center;
   position: relative;
+  mask-image: linear-gradient(rgba(0,0,0,1) 85%, rgba(0,0,0,0));
 }
 
-.hero::after {
+/* .hero::after {
   content: "";
   display: block;
   position: absolute;
@@ -186,11 +187,15 @@ body {
     rgba(1, 1, 3, 1) 6%,
     rgba(255, 255, 255, 0) 80%
   );
-}
+} */
 
 .hero .content {
   padding: 1.4rem 7%;
-  max-width: 60rem;
+  /* max-width: 60rem; */
+  width: 100%;
+  text-align: center;
+  position: fixed;
+  top: 250px;
 }
 .hero .content h1 {
   font-size: 2.8rem;
@@ -450,7 +455,7 @@ footer .credit a {
 /* Modal Box */
 /* Item Detail */
 .modal {
-  display: flex;
+  display: none;
   position: fixed;
   z-index: 99999;
   left: 0;
@@ -468,6 +473,18 @@ footer .credit a {
   padding: 1.2rem;
   border: 1px solid #666;
   width: 80%;
+  animation: animateModal 0.5s;
+}
+/* Modal Animation */
+@keyframes animateModal {
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
 }
 
 .modal-container .close-icon {
@@ -496,6 +513,10 @@ footer .credit a {
   color: #fff;
   margin-top: 1rem;
   padding: 1rem 1.6rem;
+}
+.modal-content .product-content .product-price span{
+  text-decoration: line-through;
+  color: red;
 }
 /* Media Queries */
 
@@ -584,6 +605,14 @@ footer .credit a {
   }
   .contact .row form {
     padding-top: 0;
+  }
+  .modal-content {
+    flex-wrap: wrap;
+  }
+  .modal-content .product-content p {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: justify;
   }
 }
 
