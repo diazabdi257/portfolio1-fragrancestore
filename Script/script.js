@@ -15,12 +15,15 @@ document.querySelector("#search-button").onclick = (e) => {
   searchBox.focus();
   e.preventDefault();
 };
+
 // toggle class active untuk shopping cart
 const shoppingCart = document.querySelector(".shopping-cart");
 
-document.querySelector("#shopping-cart-button").onclick = () => {
+document.querySelector("#shopping-cart-button").onclick = (e) => {
   shoppingCart.classList.toggle("active");
+  e.preventDefault();
 };
+
 // Klik diluar sidebar untuk menghilangkan nav
 
 const hm = document.querySelector("#hamburger-menu");
@@ -45,22 +48,21 @@ const itemDetailButtons = document.querySelectorAll(".item-detail-button");
 
 itemDetailButtons.forEach((btn) => {
   btn.onclick = (e) => {
-  itemDetailModal.style.display = 'flex';
-  e.preventDefault();
-};
+    itemDetailModal.style.display = "flex";
+    e.preventDefault();
+  };
 });
-
 
 // klik tombol close modal
 
-document.querySelector('.modal .close-icon').onclick = (e) => {
-  itemDetailModal.style.display = 'none';
+document.querySelector(".modal .close-icon").onclick = (e) => {
+  itemDetailModal.style.display = "none";
   e.preventDefault();
 };
 
 // klik diluar modal
 window.onclick = (e) => {
   if (e.target === itemDetailModal) {
-    modal.style.display = "none";
+    itemDetailModal.style.display = "none";
   }
-}
+};
