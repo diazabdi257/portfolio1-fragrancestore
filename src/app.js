@@ -1,3 +1,15 @@
+// konversi ke Rupiah
+const rupiah = (number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(number);
+};
+
+// Expose rupiah function to window for Alpine.js
+window.rupiah = rupiah;
+
 document.addEventListener("alpine:init", () => {
   Alpine.data("products", () => ({
     items: [
@@ -98,33 +110,51 @@ document.addEventListener("alpine:init", () => {
   });
 });
 
-// form validation
-const checkoutButton = document.querySelector('.checkout-button');
-checkoutButton.disabled = true;
+// Wait for DOM to be ready before setting up form validation
+document.addEventListener('DOMContentLoaded', function() {
+  // form validation
+  const checkoutButton = document.querySelector('.checkout-button');
+  const form = document.querySelector('#checkoutForm');
+  
+  if (checkoutButton && form) {
+    checkoutButton.disabled = true;
 
-const form = document.querySelector('#checkoutForm');
+    form.addEventListener('keyup', function () {
+      for(let i = 0; i < form.elements.length; i++){
+        if(form.elements[i].value.length !== 0) {
+          checkoutButton.classList.remove('disabled');
+          checkoutButton.classList.add("disabled");
+        } else{
+          return false;
+        }
+      }
+      checkoutButton.disabled = false;
+      checkoutButton.classList.remove('disabled')
+    });
+    
+    // kirim data ketika tombol checkout diklik
+    checkoutButton.addEventListener('click', async function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = new URLSearchParams(formData);
+      const objData = Object.fromEntries(data);
+      // const message = formatMessage(objData);
+      // window.open('http://wa.me/6285219752428?text=' + encodeURIComponent(message));
 
-form.addEventListener('keyup', function () {
-  for(let i = 0; i < form.elements.length; i++){
-    if(form.elements[i].value.length !== 0) {
-      checkoutButton.classList.remove('disabled');
-      checkoutButton.classList.add("disabled");
-    } else{
-      return false;
-    }
+      // minta transaction token menggunakan ajax / fetch
+      try {
+        const response = await fetch('../php/placeOrder.php', {
+          method: 'POST',
+          body: data,
+        });
+        const token = await response.text();
+        window.snap.pay(token);
+      } catch(err){
+        console.log(err.message);
+      }
+    });
   }
-  checkoutButton.disabled = false;
-  checkoutButton.classList.remove('disabled')
 });
-// kirim data ketika tombol checkout diklik
-checkoutButton.addEventListener('click', function (e) {
-  e.preventDefault();
-  const formData = new FormData(form);
-  const data = new URLSearchParams(formData);
-  const objData = Object.fromEntries(data);
-  const message = formatMessage(objData);
-  window.open('http://wa.me/6285219752428?text=' + encodeURIComponent(message));
-})
 
 // format pesan Whatsapp
 const formatMessage = (obj) => {
@@ -137,12 +167,3 @@ Data Pesanan
 TOTAL: ${rupiah(obj.total)}
 Terima Kasih.`;
 }
-
-// konversi ke Rupiah
-const rupiah = (number) => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(number);
-};
